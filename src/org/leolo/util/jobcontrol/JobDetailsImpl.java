@@ -13,6 +13,13 @@ public class JobDetailsImpl implements JobDetails {
 	private long createdTime;
 	private int priority;
 	private Set<String> dependency = new HashSet<>();
+	private Job job;
+	
+	@Override
+	public Job getJob(){
+		return job;
+	}
+	
 	@Override
 	public Set<String> getDependency() {
 		return UnmodifiableSet.<String>unmodifiableSet(dependency);
@@ -72,6 +79,10 @@ public class JobDetailsImpl implements JobDetails {
 
 	public void clearDependency() {
 		dependency.clear();
+	}
+
+	public void setJob(Job job) {
+		this.job = job;
 	}
 
 }

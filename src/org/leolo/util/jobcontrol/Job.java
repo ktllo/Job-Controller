@@ -13,10 +13,6 @@ public abstract class Job {
 	 */
 	public abstract void run();
 	
-	public Job(){
-		status = JobStatus.PENDING;
-	}
-	
 	public JobStatus getStatus() {
 		return status;
 	}
@@ -31,16 +27,5 @@ public abstract class Job {
 
 	protected void setController(JobController controller) {
 		this.controller = controller;
-	}
-
-	final class JobThread implements Runnable{
-		
-		public void run(){
-			if(controller != null){
-				status = JobStatus.RUNNING;
-				Job.this.run();
-				status = JobStatus.FINISHED;
-			}
-		}
 	}
 }

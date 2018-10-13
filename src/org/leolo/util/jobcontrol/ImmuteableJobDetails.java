@@ -11,7 +11,12 @@ public class ImmuteableJobDetails implements JobDetails {
 	private long createdTime;
 	private int priority;
 	private Set<String> dependency;
+	private Job job;
 	
+	@Override
+	public Job getJob(){
+		return job;
+	}
 	@Override
 	public String getJobId() {
 		return jobId;
@@ -48,6 +53,7 @@ public class ImmuteableJobDetails implements JobDetails {
 		ijd.jobName=job.getJobName();
 		ijd.priority=job.getPriority();
 		ijd.dependency=UnmodifiableSet.<String>unmodifiableSet(job.getDependency());
+		ijd.job = job.getJob();
 		return ijd;
 	}
 

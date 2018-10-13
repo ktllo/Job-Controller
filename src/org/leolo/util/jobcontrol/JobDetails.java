@@ -9,5 +9,8 @@ interface JobDetails {
 	public long getCreatedTime();
 	public int getPriority();
 	public Set<String> getDependency();
+	public default long getPoints(long referenceTime){
+		return (referenceTime-this.getCreatedTime())*this.getPriority();
+	}
 	
 }

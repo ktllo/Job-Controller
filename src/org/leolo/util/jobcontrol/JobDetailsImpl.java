@@ -1,6 +1,10 @@
 package org.leolo.util.jobcontrol;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
+
+import org.apache.commons.collections4.set.UnmodifiableSet;
 
 public class JobDetailsImpl implements JobDetails {
 	
@@ -8,11 +12,10 @@ public class JobDetailsImpl implements JobDetails {
 	private String jobName;
 	private long createdTime;
 	private int priority;
-
+	private Set<String> dependency = new HashSet<>();
 	@Override
 	public Set<String> getDependency() {
-		// TODO Auto-generated method stub
-		return null;
+		return UnmodifiableSet.<String>unmodifiableSet(dependency);
 	}
 
 	public String getJobId() {
@@ -45,6 +48,30 @@ public class JobDetailsImpl implements JobDetails {
 
 	public void setPriority(int priority) {
 		this.priority = priority;
+	}
+
+	public int getDependencySize() {
+		return dependency.size();
+	}
+
+	public boolean addDependency(String e) {
+		return dependency.add(e);
+	}
+
+	public boolean removeDependency(Object o) {
+		return dependency.remove(o);
+	}
+
+	public boolean addAllDependency(Collection<? extends String> c) {
+		return dependency.addAll(c);
+	}
+
+	public boolean removeAllDependency(Collection<?> c) {
+		return dependency.removeAll(c);
+	}
+
+	public void clearDependency() {
+		dependency.clear();
 	}
 
 }

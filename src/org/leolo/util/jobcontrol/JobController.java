@@ -1,5 +1,6 @@
 package org.leolo.util.jobcontrol;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
@@ -38,7 +39,17 @@ public class JobController {
 		}
 		
 		public void run(){
-			
+mainLoop:	while(true){
+				//Update the block status
+				//Check is there any job left, add them to a temp. list
+				List<Job> pending = new ArrayList<>();
+				for(Job j:jobList){
+					if(j.getStatus()==JobStatus.PENDING){
+						pending.add(j);
+					}
+				}
+				final long REFERENCE_TIME = System.currentTimeMillis();
+			}
 		}
 	}
 	

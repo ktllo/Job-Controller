@@ -33,7 +33,7 @@ public abstract class Job {
 		this.controller = controller;
 	}
 
-	class JobThread implements Runnable{
+	final class JobThread implements Runnable{
 		
 		public void run(){
 			if(controller != null){

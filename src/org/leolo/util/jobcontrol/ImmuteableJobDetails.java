@@ -2,38 +2,53 @@ package org.leolo.util.jobcontrol;
 
 import java.util.Set;
 
+import org.apache.commons.collections4.set.UnmodifiableSet;
+
 public class ImmuteableJobDetails implements JobDetails {
 	
-	
+	private String jobId;
+	private String jobName;
+	private long createdTime;
+	private int priority;
+	private Set<String> dependency;
 	
 	@Override
 	public String getJobId() {
-		// TODO Auto-generated method stub
-		return null;
+		return jobId;
 	}
 
 	@Override
 	public String getJobName() {
-		// TODO Auto-generated method stub
-		return null;
+		return jobName;
 	}
 
 	@Override
 	public long getCreatedTime() {
-		// TODO Auto-generated method stub
-		return 0;
+		return createdTime;
 	}
 
 	@Override
 	public int getPriority() {
-		// TODO Auto-generated method stub
-		return 0;
+		return priority;
 	}
 
 	@Override
 	public Set<String> getDependency() {
-		// TODO Auto-generated method stub
-		return null;
+		return dependency;
+	}
+	
+	private ImmuteableJobDetails(){
+		
+	}
+	
+	public static ImmuteableJobDetails create(JobDetails job){
+		ImmuteableJobDetails ijd = new ImmuteableJobDetails();
+		ijd.createdTime=job.getCreatedTime();
+		ijd.jobId=job.getJobId();
+		ijd.jobName=job.getJobName();
+		ijd.priority=job.getPriority();
+		ijd.dependency=UnmodifiableSet.<String>unmodifiableSet(job.getDependency());
+		return ijd;
 	}
 
 }

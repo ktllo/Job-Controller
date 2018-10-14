@@ -1,5 +1,6 @@
 package org.leolo.util.jobcontrol;
 
+import java.lang.Thread.State;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +50,17 @@ public class JobController {
 				}
 			}
 		}
+		jd.getJob().setStatus(JobStatus.BLOCKED);
 		jobList.put(jd.getJobId(), ImmuteableJobDetails.create(jd));
+	}
+	
+	private int threadCount(){
+		int threadCount = 0;
+		for(JobThread t:threads){
+			if(t.getState()!=State.TERMINATED)
+				threadCount++;
+		}
+		return threadCount;
 	}
 	
 	private class JobControllerThread extends Thread{
@@ -61,12 +72,15 @@ public class JobController {
 		public void run(){
 mainLoop:	while(true){
 				//Checks is there spare threads
-				int threadCount = 0;
-				for(JobThread t:threads){
-					if(t.isAlive())
-						threadCount++;
-				}
-				if(threadCount >= MAX_THREAD_COUNT){
+				
+				if(threadCount() >= MAX_THREAD_COUNT){
+					synchronized(getSynchronizeToken()){
+						try {
+							getSynchronizeToken().wait();
+						} catch (InterruptedException e) {
+							log.error(e.getLocalizedMessage(), e);
+						}
+					}
 					continue mainLoop;
 				}
 				//Update the block status
@@ -97,20 +111,20 @@ blkChkLoop:		for(ImmuteableJobDetails j:jobList.values()){
 				ImmuteableJobDetails targetJob = null;
 				for(ImmuteableJobDetails ijd:pending){
 					long point = ijd.getPoints(REFERENCE_TIME);
+					log.debug("Point for {} is {}", ijd.getJobId(), point);
 					if(point>maxPoint){
 						maxPoint = point;
 						targetJob = ijd;
 					}
 				}
 				//Start the thread
-				new JobThread(targetJob).start();
-				synchronized(getSynchronizeToken()){
-					try {
-						getSynchronizeToken().wait();
-					} catch (InterruptedException e) {
-						log.error(e.getLocalizedMessage(), e);
-					}
+				if(targetJob!=null){
+					JobThread jt = new JobThread(targetJob);
+					targetJob.getJob().setStatus(JobStatus.RUNNING);
+					threads.add(jt);
+					jt.start();
 				}
+				
 			}
 		}
 	}
@@ -141,10 +155,12 @@ outer:	while(true){
 		}
 		
 		public void run(){
-			ijd.getJob().setStatus(JobStatus.RUNNING);
-			ijd.getJob().run();
-			ijd.getJob().setStatus(JobStatus.FINISHED);
-			synchronized(getSynchronizeToken()){
+			try{
+				ijd.getJob().run();
+				ijd.getJob().setStatus(JobStatus.FINISHED);
+			}catch(RuntimeException re){
+				log.error(re.getLocalizedMessage(), re);
+			}synchronized(getSynchronizeToken()){
 				getSynchronizeToken().notifyAll();
 			}
 		}

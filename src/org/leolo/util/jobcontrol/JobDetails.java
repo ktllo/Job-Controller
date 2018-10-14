@@ -2,7 +2,7 @@ package org.leolo.util.jobcontrol;
 
 import java.util.Set;
 
-interface JobDetails {
+public interface JobDetails {
 	
 	public String getJobId();
 	public String getJobName();

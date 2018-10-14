@@ -36,7 +36,22 @@ public class JobController {
 	public String getSynchronizeToken() {
 		return synchronizeToken;
 	}
-
+	
+	public void addJob(JobDetails jd){
+		if(jobList.containsKey(jd.getJobId())){
+			throw new RuntimeException("Job ID already exists");
+		}
+		for(String dep:jd.getDependency()){
+			JobDetails depjd = jobList.get(dep);
+			if(depjd!=null){
+				if(depjd.getDependency().contains(jd.getJobId())){
+					throw new RuntimeException("Loop in dependency found!");
+				}
+			}
+		}
+		jobList.put(jd.getJobId(), ImmuteableJobDetails.create(jd));
+	}
+	
 	private class JobControllerThread extends Thread{
 		
 		public JobControllerThread(){

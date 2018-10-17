@@ -1,5 +1,9 @@
 package org.leolo.util.jobcontrol;
 
+/**
+ * Representing the current status of the job.
+ *
+ */
 public enum JobStatus {
 	/**
 	 * Indicating the job is being blocked because the prerequisite of the job has not been

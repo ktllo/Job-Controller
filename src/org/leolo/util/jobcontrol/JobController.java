@@ -12,6 +12,9 @@ import org.slf4j.LoggerFactory;
 
 public class JobController {
 	
+	/**
+	 * The maximum number of thread to be started at same time
+	 */
 	public final int MAX_THREAD_COUNT;
 	private JobControllerThread thread;
 	
@@ -23,6 +26,10 @@ public class JobController {
 	
 	private List<JobThread> threads;
 	
+	/**
+	 * Create an instance of JobController with the specific maximum number of thread
+	 * @param maxThreadCount maximum number of thread to be started
+	 */
 	public JobController(int maxThreadCount){
 		MAX_THREAD_COUNT = maxThreadCount;
 		jobList = new ConcurrentHashMap<>();
@@ -30,14 +37,24 @@ public class JobController {
 		threads = new Vector<>(MAX_THREAD_COUNT);
 	}
 	
+	/**
+	 * Create an instance of JobController with the default maximum number of thread
+	 */
 	public JobController(){
 		this(5);
 	}
 	
+	/**
+	 * Get the token used for synchronization 
+	 * @return token used for synchronization 
+	 */
 	public String getSynchronizeToken() {
 		return synchronizeToken;
 	}
-	
+	/**
+	 * Add a new job this job controller
+	 * @param jd the new job
+	 */
 	public void addJob(JobDetails jd){
 		if(jobList.containsKey(jd.getJobId())){
 			throw new RuntimeException("Job ID already exists");
@@ -129,6 +146,10 @@ blkChkLoop:		for(ImmuteableJobDetails j:jobList.values()){
 		}
 	}
 	
+	/**
+	 * Start running the job in the job controller. This method will return once all the 
+	 * job in this controller has been finished.
+	 */
 	public void start(){
 		thread.start();
 outer:	while(true){

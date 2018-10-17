@@ -4,6 +4,9 @@ import java.util.Set;
 
 import org.apache.commons.collections4.set.UnmodifiableSet;
 
+/**
+ * An unmodifiable instance of {@link JobDetails}
+ */
 public class ImmuteableJobDetails implements JobDetails {
 	
 	private String jobId;
@@ -46,6 +49,11 @@ public class ImmuteableJobDetails implements JobDetails {
 		
 	}
 	
+	/**
+	 * Create an ImmuteableJobDetails from an existing {@link JobDetails}
+	 * @param job The JobDetails to create an ImmuteableJobDetails from.
+	 * @return An instance of ImmuteableJobDetails
+	 */
 	public static ImmuteableJobDetails create(JobDetails job){
 		ImmuteableJobDetails ijd = new ImmuteableJobDetails();
 		ijd.createdTime=job.getCreatedTime();
